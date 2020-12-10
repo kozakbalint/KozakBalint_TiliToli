@@ -21,6 +21,7 @@ namespace TiliToli
     public partial class MainWindow : Window
     {
         int boardSizeValue = 0;
+        Button[,] boardMatrix;
         public MainWindow()
         {
             InitializeComponent();
@@ -41,7 +42,7 @@ namespace TiliToli
                 }
                 else
                 {
-                    //TODO: Game method.
+                    InitBoard();
                 }
 
             }
@@ -49,6 +50,38 @@ namespace TiliToli
             {
                 MessageBox.Show("Számot adjon meg a tábla méretének.");
             }
+        }
+
+        private void InitBoard()
+        {
+            boardSizeLabel.Visibility = Visibility.Collapsed;
+            boardSizeInput.Visibility = Visibility.Collapsed;
+            gameButton.Visibility = Visibility.Collapsed;
+            boardMatrix = new Button[boardSizeValue, boardSizeValue];
+            int k = 1;
+
+            for (int i = 0; i < boardSizeValue; i++)
+            {
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+            }
+            
+            for (int i = 0; i < boardSizeValue; i++)
+            {
+                for (int j = 0; j < boardSizeValue; j++)
+                {
+                    Button newButton = new Button();
+                    newButton.Name = "Button" + k.ToString();
+                    newButton.Content = k.ToString();
+                    Grid.SetRow(newButton, i);
+                    Grid.SetColumn(newButton, j);
+                    //TODO: newButton.Click() event;
+                    boardMatrix[i, j] = newButton;
+                    grid.Children.Add(newButton);
+                    k++;
+                }
+            }
+            boardMatrix[boardSizeValue-1,boardSizeValue-1].Visibility = Visibility.Hidden;
         }
     }
 }

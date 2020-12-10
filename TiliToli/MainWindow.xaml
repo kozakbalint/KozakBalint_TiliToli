@@ -5,12 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TiliToli"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="450">
-    <UniformGrid>
-        <Label Content="Add meg a tábla méretét a játékhoz:" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,-88,0" Width="299"/>
-        <TextBox x:Name="boardSizeInput" TextWrapping="Wrap" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="18" Margin="0,0,10,0" Height="34" Width="118" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-        <Button Content="Játék" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Width="79" Height="46" Panel.ZIndex="-3" Margin="181,79,-39,85" Click="Game_Click"/>
-
-
-    </UniformGrid>
+        Title="TiliToli" Height="450" Width="450">
+    <Grid x:Name="grid">
+        <Label x:Name="boardSizeLabel" Content="Add meg a tábla méretét a játékhoz:" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,168,133,217"/>
+        <TextBox x:Name="boardSizeInput" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Margin="314,0,10,50" Height="34" Width="118" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        <Button x:Name="gameButton" Content="Játék" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Width="79" Height="46" Panel.ZIndex="-3" Margin="0,50,0,0" Click="Game_Click"/>
+    </Grid>
 </Window>
