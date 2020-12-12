@@ -35,6 +35,8 @@ namespace TiliToli
             ShowMatrix();
             //TODO: Check Win
         }
+
+        //Show the current matrix in the console
         private void ShowMatrix()
         {
             //Only for debug purposes
@@ -48,6 +50,7 @@ namespace TiliToli
             }
         }
 
+        //Check the board input and call the InitBoard and MixingBoard methods 
         private void GameClickEvent(object sender, RoutedEventArgs e)
         {
             try
@@ -64,6 +67,7 @@ namespace TiliToli
                 else
                 {
                     InitBoard();
+                    //TODO: Mixing the board.
                 }
 
             }
@@ -73,6 +77,7 @@ namespace TiliToli
             }
         }
 
+        //Generate the buttons and initalize the matrices 
         private void InitBoard()
         {
             boardSizeLabel.Visibility = Visibility.Collapsed;
@@ -107,6 +112,7 @@ namespace TiliToli
             winBoardMatrix[boardSizeValue-1,boardSizeValue-1].Visibility = Visibility.Hidden;
         }
 
+        //Update the buttons when two buttons switch positions.
         private void MoveButtons(object sender)
         {
             Button oneBtn = sender as Button;
@@ -135,6 +141,7 @@ namespace TiliToli
             }
         }
 
+        //Update the matrix when two buttons switch position.
         private void ChangeMatrix(Button firstBtn, Button secondBtn)
         {
             int[] firstBtnCord = new int[2];  
