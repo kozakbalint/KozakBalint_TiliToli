@@ -27,7 +27,13 @@ namespace TiliToli
             InitializeComponent();
         }
 
-        private void Game_Click(object sender, RoutedEventArgs e)
+        private void ButtonSwitchEvent(object sender, RoutedEventArgs e)
+        {
+            //TODO: Move Button
+            //TODO: Check Win
+        }
+
+        private void GameClickEvent(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -75,7 +81,7 @@ namespace TiliToli
                     newButton.Content = k.ToString();
                     Grid.SetRow(newButton, i);
                     Grid.SetColumn(newButton, j);
-                    //TODO: newButton.Click() event;
+                    newButton.Click += ButtonSwitchEvent;
                     boardMatrix[i, j] = newButton;
                     grid.Children.Add(newButton);
                     k++;

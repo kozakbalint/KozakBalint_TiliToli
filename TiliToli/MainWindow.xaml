@@ -9,7 +9,7 @@
     <Grid x:Name="grid">
         <Label x:Name="boardSizeLabel" Content="Adja meg a tábla méretét (Min:3, Max:10)" HorizontalAlignment="Left" Margin="10,147,0,0" VerticalAlignment="Top" FontSize="14"/>
         <TextBox x:Name="boardSizeInput" HorizontalAlignment="Left" Height="29" Margin="312,147,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="14"/>
-        <Button x:Name="gameButton" Content="Játék" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="75" FontSize="14" Click="Game_Click"/>
+        <Button x:Name="gameButton" Content="Játék" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="75" FontSize="14" Click="GameClickEvent"/>
 
     </Grid>
 </Window>
