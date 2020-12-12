@@ -21,7 +21,8 @@ namespace TiliToli
     public partial class MainWindow : Window
     {
         int boardSizeValue = 0;
-        Button[,] boardMatrix;
+        Button[,] winBoardMatrix;
+        Button[,] currBoardMatrix;
         public MainWindow()
         {
             InitializeComponent();
@@ -29,8 +30,22 @@ namespace TiliToli
 
         private void ButtonSwitchEvent(object sender, RoutedEventArgs e)
         {
-            //TODO: Move Button
+            ShowMatrix();
+            MoveButtons(sender);
+            ShowMatrix();
             //TODO: Check Win
+        }
+        private void ShowMatrix()
+        {
+            //Only for debug purposes
+            for (int i = 0; i < boardSizeValue; i++)
+            {
+                for (int j = 0; j < boardSizeValue; j++)
+                {
+                    Console.Write($"({currBoardMatrix[i,j].Content})");
+                }
+                Console.WriteLine();
+            }
         }
 
         private void GameClickEvent(object sender, RoutedEventArgs e)
@@ -63,7 +78,8 @@ namespace TiliToli
             boardSizeLabel.Visibility = Visibility.Collapsed;
             boardSizeInput.Visibility = Visibility.Collapsed;
             gameButton.Visibility = Visibility.Collapsed;
-            boardMatrix = new Button[boardSizeValue, boardSizeValue];
+            winBoardMatrix = new Button[boardSizeValue, boardSizeValue];
+            currBoardMatrix = new Button[boardSizeValue, boardSizeValue];
             int k = 1;
 
             for (int i = 0; i < boardSizeValue; i++)
@@ -82,12 +98,65 @@ namespace TiliToli
                     Grid.SetRow(newButton, i);
                     Grid.SetColumn(newButton, j);
                     newButton.Click += ButtonSwitchEvent;
-                    boardMatrix[i, j] = newButton;
+                    winBoardMatrix[i, j] = newButton;
+                    currBoardMatrix[i, j] = newButton;
                     grid.Children.Add(newButton);
                     k++;
                 }
             }
-            boardMatrix[boardSizeValue-1,boardSizeValue-1].Visibility = Visibility.Hidden;
+            winBoardMatrix[boardSizeValue-1,boardSizeValue-1].Visibility = Visibility.Hidden;
+        }
+
+        private void MoveButtons(object sender)
+        {
+            Button oneBtn = sender as Button;
+            Button lastBtn = winBoardMatrix[boardSizeValue - 1, boardSizeValue - 1];
+            int[] oneBtnCord = new int[2];
+            int[] lastBtnCord = new int[2];
+            int maxHCord = Math.Abs(Grid.GetRow(oneBtn) - Grid.GetRow(lastBtn));
+            int maxVCord = Math.Abs(Grid.GetColumn(oneBtn) - Grid.GetColumn(lastBtn));
+            if ((maxHCord == 1 && maxVCord == 0) || (maxHCord == 0 && maxVCord == 1))
+            {
+                oneBtnCord[0] = Grid.GetRow(oneBtn);
+                oneBtnCord[1] = Grid.GetColumn(oneBtn);
+                lastBtnCord[0] = Grid.GetRow(lastBtn);
+                lastBtnCord[1] = Grid.GetColumn(lastBtn);
+                for (int i = 0; i < 2; i++)
+                {
+                    int tmp = oneBtnCord[i];
+                    oneBtnCord[i] = lastBtnCord[i];
+                    lastBtnCord[i] = tmp;
+                }
+                Grid.SetRow(oneBtn, oneBtnCord[0]);
+                Grid.SetRow(lastBtn, lastBtnCord[0]);
+                Grid.SetColumn(oneBtn, oneBtnCord[1]);
+                Grid.SetColumn(lastBtn, lastBtnCord[1]);
+                ChangeMatrix(oneBtn, lastBtn);
+            }
+        }
+
+        private void ChangeMatrix(Button firstBtn, Button secondBtn)
+        {
+            int[] firstBtnCord = new int[2];  
+            int[] secondBtnCord = new int[2]; 
+            for (int i = 0; i < boardSizeValue; i++)
+            {
+                for (int j = 0; j < boardSizeValue; j++)
+                {
+                    if (currBoardMatrix[i,j] == firstBtn)
+                    {
+                        firstBtnCord[0] = i;
+                        firstBtnCord[1] = j;
+                    }
+                    if (currBoardMatrix[i, j] == secondBtn)
+                    {
+                        secondBtnCord[0] = i;
+                        secondBtnCord[1] = j;
+                    }
+                }
+            }
+            currBoardMatrix[firstBtnCord[0], firstBtnCord[1]] = secondBtn;
+            currBoardMatrix[secondBtnCord[0], secondBtnCord[1]] = firstBtn;
         }
     }
 }
