@@ -33,7 +33,6 @@ namespace TiliToli
         private void ButtonSwitchEvent(object sender, RoutedEventArgs e)
         {
             MoveButtons(sender);
-            ShowMatrix();
             //TODO: Check Win
         }
 
@@ -233,14 +232,14 @@ namespace TiliToli
             }
             else if (buttonPos[0] == 0)
             {
-                possibleSwitches.Add(FindButton(buttonPos[0]-1, buttonPos[1]));
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]-1));
                 possibleSwitches.Add(FindButton(buttonPos[0]+1, buttonPos[1]));
                 possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]+1));
                 return possibleSwitches[r.Next(0, 3)];
             }
             else if (buttonPos[1] == 0)
             {
-                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]-1));
+                possibleSwitches.Add(FindButton(buttonPos[0]-1, buttonPos[1]));
                 possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]+1));
                 possibleSwitches.Add(FindButton(buttonPos[0]+1, buttonPos[1]));
                 return possibleSwitches[r.Next(0, 3)];
@@ -272,9 +271,15 @@ namespace TiliToli
         private void MixingBoard()
         {
             Random r = new Random();
-            for (int i = 0; i < 150; i++)
+            Button secondBtn = FindARandomPossibleSwitch(lastBtn);
+            Button beforeBtn = secondBtn;
+            for (int i = 0; i < 15; i++)
             {
-                Button secondBtn = FindARandomPossibleSwitch(lastBtn);
+                do
+                {
+                    secondBtn = FindARandomPossibleSwitch(lastBtn);
+                } while (secondBtn == beforeBtn);
+                beforeBtn = secondBtn;
                 ChangeMatrix(lastBtn, secondBtn);
                 MoveButtons(secondBtn, lastBtn);
                 ShowMatrix();
