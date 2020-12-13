@@ -23,6 +23,8 @@ namespace TiliToli
         int boardSizeValue = 0;
         Button[,] winBoardMatrix;
         Button[,] currBoardMatrix;
+        int k = 1;
+        Button lastBtn;
         public MainWindow()
         {
             InitializeComponent();
@@ -30,7 +32,6 @@ namespace TiliToli
 
         private void ButtonSwitchEvent(object sender, RoutedEventArgs e)
         {
-            ShowMatrix();
             MoveButtons(sender);
             ShowMatrix();
             //TODO: Check Win
@@ -48,9 +49,10 @@ namespace TiliToli
                 }
                 Console.WriteLine();
             }
+            Console.WriteLine();
         }
 
-        //Check the board input and call the InitBoard and MixingBoard methods 
+        //Check the board input and call the InitBoard method.
         private void GameClickEvent(object sender, RoutedEventArgs e)
         {
             try
@@ -67,7 +69,6 @@ namespace TiliToli
                 else
                 {
                     InitBoard();
-                    //TODO: Mixing the board.
                 }
 
             }
@@ -85,7 +86,6 @@ namespace TiliToli
             gameButton.Visibility = Visibility.Collapsed;
             winBoardMatrix = new Button[boardSizeValue, boardSizeValue];
             currBoardMatrix = new Button[boardSizeValue, boardSizeValue];
-            int k = 1;
 
             for (int i = 0; i < boardSizeValue; i++)
             {
@@ -109,14 +109,16 @@ namespace TiliToli
                     k++;
                 }
             }
-            winBoardMatrix[boardSizeValue-1,boardSizeValue-1].Visibility = Visibility.Hidden;
+            lastBtn = winBoardMatrix[boardSizeValue - 1, boardSizeValue - 1];
+            lastBtn.Visibility = Visibility.Hidden;
+            MixingBoard();
+            
         }
 
         //Update the buttons when two buttons switch positions.
         private void MoveButtons(object sender)
         {
             Button oneBtn = sender as Button;
-            Button lastBtn = winBoardMatrix[boardSizeValue - 1, boardSizeValue - 1];
             int[] oneBtnCord = new int[2];
             int[] lastBtnCord = new int[2];
             int maxHCord = Math.Abs(Grid.GetRow(oneBtn) - Grid.GetRow(lastBtn));
@@ -141,29 +143,142 @@ namespace TiliToli
             }
         }
 
-        //Update the matrix when two buttons switch position.
-        private void ChangeMatrix(Button firstBtn, Button secondBtn)
+        private void MoveButtons(Button firstBtn, Button secondBtn)
+        { 
+            int[] firstBtnCord = new int[2];
+            int[] secondBtnCord = new int[2];
+            int maxHCord = Math.Abs(Grid.GetRow(firstBtn) - Grid.GetRow(secondBtn));
+            int maxVCord = Math.Abs(Grid.GetColumn(firstBtn) - Grid.GetColumn(secondBtn));
+            if ((maxHCord == 1 && maxVCord == 0) || (maxHCord == 0 && maxVCord == 1))
+            {
+                firstBtnCord[0] = Grid.GetRow(firstBtn);
+                firstBtnCord[1] = Grid.GetColumn(firstBtn);
+                secondBtnCord[0] = Grid.GetRow(secondBtn);
+                secondBtnCord[1] = Grid.GetColumn(secondBtn);
+                for (int i = 0; i < 2; i++)
+                {
+                    int tmp = firstBtnCord[i];
+                    firstBtnCord[i] = secondBtnCord[i];
+                    secondBtnCord[i] = tmp;
+                }
+                Grid.SetRow(firstBtn, firstBtnCord[0]);
+                Grid.SetRow(secondBtn, secondBtnCord[0]);
+                Grid.SetColumn(firstBtn, firstBtnCord[1]);
+                Grid.SetColumn(secondBtn, secondBtnCord[1]);
+            }
+        }
+
+        //Return with button positions 
+        private int[] FindMatrixPos(Button button)
         {
-            int[] firstBtnCord = new int[2];  
-            int[] secondBtnCord = new int[2]; 
+            int[] buttonCords = new int[2];
             for (int i = 0; i < boardSizeValue; i++)
             {
                 for (int j = 0; j < boardSizeValue; j++)
                 {
-                    if (currBoardMatrix[i,j] == firstBtn)
+                    if (currBoardMatrix[i, j] == button)
                     {
-                        firstBtnCord[0] = i;
-                        firstBtnCord[1] = j;
-                    }
-                    if (currBoardMatrix[i, j] == secondBtn)
-                    {
-                        secondBtnCord[0] = i;
-                        secondBtnCord[1] = j;
+                        buttonCords[0] = i;
+                        buttonCords[1] = j;
                     }
                 }
             }
+            return buttonCords;
+        }
+
+        private Button FindButton(int x, int y)
+        {
+            Button button = currBoardMatrix[x, y];
+            return button;
+        }
+
+
+        //Update the matrix when two buttons switch position.
+        private void ChangeMatrix(Button firstBtn, Button secondBtn)
+        {
+            int[] firstBtnCord = FindMatrixPos(firstBtn);
+            int[] secondBtnCord = FindMatrixPos(secondBtn);
             currBoardMatrix[firstBtnCord[0], firstBtnCord[1]] = secondBtn;
             currBoardMatrix[secondBtnCord[0], secondBtnCord[1]] = firstBtn;
+        }
+
+        private Button FindARandomPossibleSwitch(Button button)
+        {
+            Random r = new Random();
+            List<Button> possibleSwitches = new List<Button>();
+            int[] buttonPos = FindMatrixPos(button);
+            if (buttonPos[0] == 0 && buttonPos[1] == 0)
+            {
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]+1));
+                possibleSwitches.Add(FindButton(buttonPos[0]+1, buttonPos[1]));
+                return possibleSwitches[r.Next(0,2)];
+            }
+            else if (buttonPos[0] == boardSizeValue-1 && buttonPos[1] == boardSizeValue-1)
+            {
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1] - 1));
+                possibleSwitches.Add(FindButton(buttonPos[0] - 1, buttonPos[1]));
+                return possibleSwitches[r.Next(0, 2)];
+            }
+            else if (buttonPos[0] == boardSizeValue - 1 && buttonPos[1] == 0)
+            {
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1] + 1));
+                possibleSwitches.Add(FindButton(buttonPos[0] - 1, buttonPos[1]));
+                return possibleSwitches[r.Next(0, 2)];
+            } 
+            else if (buttonPos[1] == 0 && buttonPos[1] == boardSizeValue - 1) 
+            {
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1] - 1));
+                possibleSwitches.Add(FindButton(buttonPos[0] + 1, buttonPos[1]));
+                return possibleSwitches[r.Next(0, 2)];
+            }
+            else if (buttonPos[0] == 0)
+            {
+                possibleSwitches.Add(FindButton(buttonPos[0]-1, buttonPos[1]));
+                possibleSwitches.Add(FindButton(buttonPos[0]+1, buttonPos[1]));
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]+1));
+                return possibleSwitches[r.Next(0, 3)];
+            }
+            else if (buttonPos[1] == 0)
+            {
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]-1));
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]+1));
+                possibleSwitches.Add(FindButton(buttonPos[0]+1, buttonPos[1]));
+                return possibleSwitches[r.Next(0, 3)];
+            }
+            else if (buttonPos[0] == boardSizeValue - 1)
+            {
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]-1));
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]+1));
+                possibleSwitches.Add(FindButton(buttonPos[0]-1, buttonPos[1]));
+                return possibleSwitches[r.Next(0, 3)];
+            }
+            else if (buttonPos[1] == boardSizeValue - 1)
+            {
+                possibleSwitches.Add(FindButton(buttonPos[0]-1, buttonPos[1]));
+                possibleSwitches.Add(FindButton(buttonPos[0]+1, buttonPos[1]));
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]-1));
+                return possibleSwitches[r.Next(0, 3)];
+            }
+            else
+            {
+                possibleSwitches.Add(FindButton(buttonPos[0]-1, buttonPos[1]));
+                possibleSwitches.Add(FindButton(buttonPos[0]+1, buttonPos[1]));
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]-1));
+                possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1]+1));
+                return possibleSwitches[r.Next(0, 4)];
+            }
+        }
+
+        private void MixingBoard()
+        {
+            Random r = new Random();
+            for (int i = 0; i < 150; i++)
+            {
+                Button secondBtn = FindARandomPossibleSwitch(lastBtn);
+                ChangeMatrix(lastBtn, secondBtn);
+                MoveButtons(secondBtn, lastBtn);
+                ShowMatrix();
+            }
         }
     }
 }
