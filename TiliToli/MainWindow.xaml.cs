@@ -25,6 +25,9 @@ namespace TiliToli
         Button[,] currBoardMatrix;
         int k = 1;
         Button lastBtn;
+        int steps = 0;
+        Label stepLabel = new Label();
+        Button newGamButton = new Button();
         public MainWindow()
         {
             InitializeComponent();
@@ -33,7 +36,28 @@ namespace TiliToli
         private void ButtonSwitchEvent(object sender, RoutedEventArgs e)
         {
             MoveButtons(sender);
-            //TODO: Check Win
+            CheckWin();
+        }
+
+        private void RestartGameEvent(object sender, RoutedEventArgs e)
+        {
+            k = 1;
+            steps = 0;
+            grid.Children.Clear();
+            grid.ColumnDefinitions.Clear();
+            grid.RowDefinitions.Clear();
+            InitBoard();
+        }
+
+        private void CheckWin()
+        {
+            var equal =
+            Enumerable.Range(0, winBoardMatrix.Rank).All(dimension => winBoardMatrix.GetLength(dimension) == currBoardMatrix.GetLength(dimension)) &&
+            winBoardMatrix.Cast<Button>().SequenceEqual(currBoardMatrix.Cast<Button>());
+            if (equal)
+            {
+                MessageBox.Show("Nyertel");
+            }
         }
 
         //Show the current matrix in the console
@@ -91,7 +115,7 @@ namespace TiliToli
                 grid.ColumnDefinitions.Add(new ColumnDefinition());
                 grid.RowDefinitions.Add(new RowDefinition());
             }
-            
+            grid.RowDefinitions.Add(new RowDefinition());
             for (int i = 0; i < boardSizeValue; i++)
             {
                 for (int j = 0; j < boardSizeValue; j++)
@@ -110,6 +134,14 @@ namespace TiliToli
             }
             lastBtn = winBoardMatrix[boardSizeValue - 1, boardSizeValue - 1];
             lastBtn.Visibility = Visibility.Hidden;
+            newGamButton.Name = "newGamButton"; newGamButton.Content = "Új játék"; newGamButton.HorizontalAlignment = HorizontalAlignment.Right; newGamButton.VerticalAlignment = VerticalAlignment.Bottom; newGamButton.Margin = new Thickness(0,0,10,10); newGamButton.FontSize = 14; newGamButton.Width = 75; newGamButton.Click += RestartGameEvent;
+            Grid.SetRow(newGamButton, boardSizeValue);
+            Grid.SetColumn(newGamButton, boardSizeValue - 1);
+            grid.Children.Add(newGamButton);
+            stepLabel.Name = "stepLabel"; stepLabel.Content = "Lépések száma: "; stepLabel.HorizontalAlignment = HorizontalAlignment.Left; stepLabel.Margin = new Thickness(10,0,0,10); stepLabel.VerticalAlignment = VerticalAlignment.Bottom; stepLabel.Width = 130; stepLabel.FontSize = 14;
+            Grid.SetRow(stepLabel, boardSizeValue);
+            Grid.SetColumn(stepLabel, 0);
+            grid.Children.Add(stepLabel);
             MixingBoard();
             
         }
@@ -139,6 +171,8 @@ namespace TiliToli
                 Grid.SetColumn(oneBtn, oneBtnCord[1]);
                 Grid.SetColumn(lastBtn, lastBtnCord[1]);
                 ChangeMatrix(oneBtn, lastBtn);
+                steps++;
+                stepLabel.Content = $"Lépések száma: {steps}";
             }
         }
 
@@ -224,7 +258,7 @@ namespace TiliToli
                 possibleSwitches.Add(FindButton(buttonPos[0] - 1, buttonPos[1]));
                 return possibleSwitches[r.Next(0, 2)];
             } 
-            else if (buttonPos[1] == 0 && buttonPos[1] == boardSizeValue - 1) 
+            else if (buttonPos[0] == 0 && buttonPos[1] == boardSizeValue - 1) 
             {
                 possibleSwitches.Add(FindButton(buttonPos[0], buttonPos[1] - 1));
                 possibleSwitches.Add(FindButton(buttonPos[0] + 1, buttonPos[1]));
@@ -270,7 +304,6 @@ namespace TiliToli
 
         private void MixingBoard()
         {
-            Random r = new Random();
             Button secondBtn = FindARandomPossibleSwitch(lastBtn);
             Button beforeBtn = secondBtn;
             for (int i = 0; i < 15; i++)
