@@ -247,6 +247,13 @@ namespace TiliToli
             winBoardMatrix.Cast<Button>().SequenceEqual(currBoardMatrix.Cast<Button>());
             if (equal)
             {
+                for (int i = 0; i < boardSizeValue; i++)
+                {
+                    for (int j = 0; j < boardSizeValue; j++)
+                    {
+                        currBoardMatrix[i, j].IsEnabled = false;
+                    }
+                }
                 MessageBox.Show("Nyertel");
             }
         }
