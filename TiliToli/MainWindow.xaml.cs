@@ -26,8 +26,8 @@ namespace TiliToli
         int k = 1;
         Button lastBtn;
         int steps = 0;
-        Label stepLabel = new Label();
-        Button newGamButton = new Button();
+        Label stepLbl = new Label();
+        Button newGamBtn = new Button();
         public MainWindow()
         {
             InitializeComponent();
@@ -134,14 +134,15 @@ namespace TiliToli
             }
             lastBtn = winBoardMatrix[boardSizeValue - 1, boardSizeValue - 1];
             lastBtn.Visibility = Visibility.Hidden;
-            newGamButton.Name = "newGamButton"; newGamButton.Content = "Új játék"; newGamButton.HorizontalAlignment = HorizontalAlignment.Right; newGamButton.VerticalAlignment = VerticalAlignment.Bottom; newGamButton.Margin = new Thickness(0,0,10,10); newGamButton.FontSize = 14; newGamButton.Width = 75; newGamButton.Click += RestartGameEvent;
-            Grid.SetRow(newGamButton, boardSizeValue);
-            Grid.SetColumn(newGamButton, boardSizeValue - 1);
-            grid.Children.Add(newGamButton);
-            stepLabel.Name = "stepLabel"; stepLabel.Content = "Lépések száma: "; stepLabel.HorizontalAlignment = HorizontalAlignment.Left; stepLabel.Margin = new Thickness(10,0,0,10); stepLabel.VerticalAlignment = VerticalAlignment.Bottom; stepLabel.Width = 130; stepLabel.FontSize = 14;
-            Grid.SetRow(stepLabel, boardSizeValue);
-            Grid.SetColumn(stepLabel, 0);
-            grid.Children.Add(stepLabel);
+            newGamBtn.Name = "newGamButton"; newGamBtn.Content = "Új játék"; newGamBtn.HorizontalAlignment = HorizontalAlignment.Right; newGamBtn.VerticalAlignment = VerticalAlignment.Bottom; newGamBtn.Margin = new Thickness(0,0,10,10); newGamBtn.FontSize = 14; newGamBtn.Width = 75; newGamBtn.Click += RestartGameEvent;
+            Grid.SetRow(newGamBtn, boardSizeValue);
+            Grid.SetColumn(newGamBtn, boardSizeValue - 1);
+            grid.Children.Add(newGamBtn);
+            stepLbl.Name = "stepLabel"; stepLbl.Content = "Lépések száma: "; stepLbl.HorizontalAlignment = HorizontalAlignment.Left; stepLbl.Margin = new Thickness(10,0,0,10); stepLbl.VerticalAlignment = VerticalAlignment.Bottom; stepLbl.Width = 130; stepLbl.FontSize = 14;
+            Grid.SetRow(stepLbl, boardSizeValue);
+            Grid.SetColumn(stepLbl, 0);
+            Grid.SetColumnSpan(stepLbl, boardSizeValue - 1);
+            grid.Children.Add(stepLbl);
             MixingBoard();
             
         }
@@ -172,7 +173,7 @@ namespace TiliToli
                 Grid.SetColumn(lastBtn, lastBtnCord[1]);
                 ChangeMatrix(oneBtn, lastBtn);
                 steps++;
-                stepLabel.Content = $"Lépések száma: {steps}";
+                stepLbl.Content = $"Lépések száma: {steps}";
             }
         }
 
